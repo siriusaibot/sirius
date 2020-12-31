@@ -58,7 +58,7 @@ def LogisticClf(Input):
     classifier = LogisticRegression()
     classifier.fit(X_train, y_train)
     score = classifier.score(X_test, y_test)
-    print(score)
+#     print(score)
     Input = CleanText(Input)
     Input = vectorizer.transform([Input])
     return (classifier.predict(Input)[0])
@@ -71,7 +71,7 @@ def KnnClf(Input):
     Input = CleanText(Input)
     Input = vectorizer.transform([Input])
     score = neigh.score(X_test, y_test)
-    print(score)
+#     print(score)
     return neigh.predict(Input)[0]
 
 def RandForestClf(Input):
@@ -81,7 +81,7 @@ def RandForestClf(Input):
     Input = CleanText(Input)
     Input = vectorizer.transform([Input])
     score = clf.score(X_test, y_test)
-    print(score)
+#     print(score)
     return clf.predict(Input)[0]
 
 
