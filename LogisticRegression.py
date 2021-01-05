@@ -9,34 +9,30 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
+datelist = []
 my_tokenizer = Tokenizer()
 lemmatizer = Lemmatizer()
 my_stemmer = FindStems()
 myspell_checker = SpellCheck()
-my_normalizer = Normalizer(date_normalizing_needed=True)
+my_normalizer = Normalizer()
 with open("stopwords1.txt", "r") as file:
     f = file.read()
 StopWords = f.split("\n")
 vectorizer = CountVectorizer()
-
-
 def CleanText(InputText):
     WordsList = my_tokenizer.tokenize_words(my_normalizer.normalize(InputText))
     for i in range(len(WordsList)-1, -1, -1):
         if(WordsList[i] in StopWords):
             del WordsList[i]
-        else:
-            if('y' in WordsList[i]):  # finding date in sentence
-                WordsList[i] = "OODATE"
-            WordsList[i] = lemmatizer.lemmatize(WordsList[i]).split("#")[-1]
+            break
+
+        WordsList[i] = lemmatizer.lemmatize(WordsList[i]).split("#")[-1]
     JoinedWords = " ".join(WordsList)
     SpellCheckedText = myspell_checker.spell_corrector(JoinedWords)
     return SpellCheckedText
 
-
 sentences = []
 labels = []
-
 with open("1.txt", "r") as file:
     f = file.read()
     type1 = f.split("\n")
@@ -52,7 +48,6 @@ sentences_train, sentences_test, y_train, y_test = train_test_split(
 vectorizer.fit(sentences_train)
 X_train = vectorizer.transform(sentences_train)
 X_test = vectorizer.transform(sentences_test)
-
 
 def LogisticClf(Input):
     classifier = LogisticRegression()
@@ -92,8 +87,7 @@ def Vote(UserInput):
     VoteList.append(RandForestClf(CleanText(UserInput)))
     # print(VoteList)
     return max(set(VoteList), key=VoteList.count)
-
-
-while True:
-    UserInput = str(input(": "))
-    print(Vote(UserInput))
+def Intent(UserInput):
+    return Vote(CleanText(UserInput))
+UserInput = str(input(": "))
+Intent(UserInput)
